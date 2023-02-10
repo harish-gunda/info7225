@@ -12,8 +12,12 @@ class PlanCreate(APIView):
     def post(self, request, format=None):
         serializer = PlanSerializer(data=request.data)
         if serializer.is_valid():
-            encoded = json.dumps(serializer.data, sort_keys=True).encode()
+            encoded = json.dumps(request.data, sort_keys=True).encode('utf-8')
+            print(encoded)
             md5_hash = hashlib.md5(encoded)
+            if cache.get(serializer.data['objectId']):
+                return Response({"message": "An object exists with the given objectID"},
+                                status=status.HTTP_409_CONFLICT)
             cache.set(serializer.data['objectId'], serializer.data)
             return Response({"objectId": serializer.data['objectId']}, status=status.HTTP_201_CREATED,
                             headers={"Etag": md5_hash.hexdigest()})
@@ -25,7 +29,7 @@ class PlanRead(APIView):
     def get(self, request, id, format=None):
         if cache.get(id):
             if request.headers.get('ETag'):
-                encoded = json.dumps(cache.get(id), sort_keys=True).encode()
+                encoded = json.dumps(cache.get(id), sort_keys=True).encode('utf-8')
                 md5_hash = hashlib.md5(encoded)
                 if md5_hash.hexdigest() == request.headers.get('ETag'):
                     return Response(status=status.HTTP_304_NOT_MODIFIED)

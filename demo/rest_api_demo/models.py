@@ -14,7 +14,7 @@ class Service(models.Model):
     objectType = models.CharField(max_length=200)
     objectId = models.CharField(max_length=200)
     _org = models.CharField(max_length=200)
-    name = models.IntegerField()
+    name = models.CharField(max_length=200)
 
 
 class PlanService(models.Model):
