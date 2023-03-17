@@ -28,10 +28,10 @@ class PlanCreate(APIView):
 class PlanRead(APIView):
     def get(self, request, id, format=None):
         if cache.get(id):
-            if request.headers.get('ETag'):
+            if request.headers.get('if-none-match'):
                 encoded = json.dumps(cache.get(id), sort_keys=True).encode('utf-8')
                 md5_hash = hashlib.md5(encoded)
-                if md5_hash.hexdigest() == request.headers.get('ETag'):
+                if md5_hash.hexdigest() == request.headers.get('if-none-match'):
                     return Response(status=status.HTTP_304_NOT_MODIFIED)
             return Response(cache.get(id), status=status.HTTP_200_OK)
         return Response({"message": "Object Not found"}, status=status.HTTP_404_NOT_FOUND)
