@@ -15,8 +15,26 @@ Including another URLconf
 """
 from django.urls import path
 from rest_api_demo.views import PlanCreate, PlanRead
+from django.contrib import admin
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView
+)
 
 urlpatterns = [
     path('v1/plan', PlanCreate.as_view()),
     path('v1/plan/<str:id>', PlanRead.as_view()),
+    path('admin/', admin.site.urls),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
+
+"""
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "test", "password": "Support@123"}' \
+  http://localhost:8000/api/token/
+"""

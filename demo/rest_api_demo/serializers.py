@@ -36,3 +36,12 @@ class PlanSerializer(serializers.Serializer):
     creationDate = serializers.CharField()
     planCostShares = MemberCostShareSerializer()
     linkedPlanServices = serializers.ListField(child=LinkedPlanServicesSerializer())
+
+
+class PatchSerializer(serializers.Serializer):
+    linkedPlanServices = serializers.ListField(child=LinkedPlanServicesSerializer())
+    _org = serializers.CharField()
+    objectId = serializers.CharField()
+    objectType = serializers.CharField()
+    planType = serializers.CharField()
+    creationDate = serializers.CharField()
